@@ -30,11 +30,6 @@
       "static/chunks/main.js",
       "static/chunks/pages/notes.js"
     ],
-    "/notes/[...params]": [
-      "static/chunks/webpack.js",
-      "static/chunks/main.js",
-      "static/chunks/pages/notes/[...params].js"
-    ],
     "/notes/[id]": [
       "static/chunks/webpack.js",
       "static/chunks/main.js",
