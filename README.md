@@ -83,3 +83,136 @@ import React from 'react'
 
 export default () => <h1>Notes</h1>
 ```
+
+## Navigation
+
+Similar to an ```<a>``` tag, we can use the Link component from then ``` next/link``` module.
+
+```js
+import Link from 'next/link';
+
+<Link href="/settings">
+  <a>settings</a>
+</Link>
+```
+
+The href prop takes a page name as it is in the pages directory. For dynamic routes, you will need the as prop as well.
+
+```js
+<Link href="/user/[id].js" as={`/user/${user.id}`}>
+  <a>user</a>
+</Link>
+```
+
+Let's link our pages together!
+
+```js
+// pages/index.jsx
+import React from 'react'
+import Link from 'next/link'
+
+export default () => (
+  <div>
+    <h1>Index page</h1>
+
+    <Link href="/notes">
+      <a>Notes</a>
+    </Link>
+  </div> 
+)
+```
+
+```js
+// pages/notes/index.jsx
+import React from 'react'
+import Link from 'next/link'
+
+export default () => {
+  const notes = new Array(15).fill(1).map((e, i) => ({id: i, title: `Note: ${i}`}))
+
+  return (
+    <div>
+      <h1>Notes</h1>
+
+      {notes.map(note => (
+        <div>
+          <Link key={note.id} href="/notes/[id]" as={`/notes/${note.id}`}>
+            <a>
+              <strong>{note.title}</strong>
+            </a>
+          </Link>
+        </div>
+      ))}
+    </div>
+  )
+}
+```
+
+```js
+// pages/notes/[id].jsx
+import React from 'react'
+import { useRouter } from 'next/router'
+import Link from 'next/link'
+
+export default () => {
+  const router = useRouter()
+  const { id }= router.query
+
+  return (
+    <div>
+      <h1>Note: {id} </h1>
+
+      <Link href="/notes">
+        <a>Notes</a>
+      </Link>
+    </div>
+  )
+}
+```
+
+## Programmatic routing
+
+Just like the ```Link``` component, use the router for client-side routing. To navigate to a page, you can use the ```push``` method, which works like ```href``` on the ```Link``` component.
+
+```js
+import React from 'react'
+import { useRouter } from 'next/router'
+
+export default () => {
+  const router = useRouter()
+  const id = 2
+
+  return (
+    <div>
+      <button onClick={e => router.push('/')}>
+        Go Home
+      </button>
+
+      <button onClick={e => router.push('/user/[id]', `/user/${id}`)}>
+        Dashboard
+      </button>
+    </div>
+  )
+}
+```
+
+## Styling
+
+When it comes to styling, you have global styles and component styles. For global CSS, you have to import them at the entry point of your app. Wait, where is the entrance to my Next.js app? It's actually created for you, but you can and have to create your own now that you want global styles.
+
+Create an ```pages/_app.jsx``` file and add this:
+
+```js
+export default function App({ Component, pageProps }) {
+  return <Component {...pageProps} />
+}
+```
+
+You can import a CSS module file anywhere in your app. To create a CSS module, you have to use a special syntax in the file name.
+```styles.module.css```
+This makes CSS modules a perfect solution to styling components.
+```
+components
+  button.jsx
+  button.module.css
+```
